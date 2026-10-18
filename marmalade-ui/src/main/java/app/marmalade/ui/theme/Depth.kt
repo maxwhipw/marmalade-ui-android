@@ -91,7 +91,7 @@ enum class LightDepth { FLAT, SOFT, LIFTED }
 val LIGHT_DEPTH = LightDepth.SOFT
 
 /** Dark: Stone 800 cards on stone deep; shadows from the agent-cards lab. */
-internal fun darkDepth(scheme: ColorScheme): MarmaladeDepth {
+fun darkDepth(scheme: ColorScheme): MarmaladeDepth {
     val ink = scheme.onSurface
     return MarmaladeDepth(
         isDark = true,
@@ -118,7 +118,7 @@ internal fun darkDepth(scheme: ColorScheme): MarmaladeDepth {
  * Light: webui's light ramp (ink-3 at 52%, ink-4 at 24%, hairlines 8 / 13%)
  * and its softer, warm shadow (the --shadow-pop ink-dim tint, #7C2D12).
  */
-internal fun lightDepth(scheme: ColorScheme, pick: LightDepth = LIGHT_DEPTH): MarmaladeDepth {
+fun lightDepth(scheme: ColorScheme, pick: LightDepth = LIGHT_DEPTH): MarmaladeDepth {
     val ink = scheme.onSurface
     val warm = MarmaladeToastInk
     val shadowed = pick != LightDepth.FLAT
@@ -145,7 +145,7 @@ internal fun lightDepth(scheme: ColorScheme, pick: LightDepth = LIGHT_DEPTH): Ma
 internal val LocalMarmaladeDepth = staticCompositionLocalOf<MarmaladeDepth?> { null }
 
 /**
- * The depth tokens for the current theme. Outside [MarmaladeTtsTheme]
+ * The depth tokens for the current theme. Outside [MarmaladeTheme]
  * (a bare preview) they are derived from whatever scheme is in scope.
  */
 val MaterialTheme.depth: MarmaladeDepth

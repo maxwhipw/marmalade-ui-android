@@ -5,10 +5,10 @@ import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
 /**
- * Warm rounded shapes for the Marmalade TTS theme.
+ * Warm rounded shapes for the Marmalade theme.
  * Matches the corner radii used in marmalade-android.
  */
-val MarmaladeTtsShapes = Shapes(
+val MarmaladeShapes = Shapes(
     extraSmall = RoundedCornerShape(8.dp),
     small = RoundedCornerShape(12.dp),
     medium = RoundedCornerShape(16.dp),

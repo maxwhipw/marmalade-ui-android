@@ -131,8 +131,8 @@ val MarmaladeToastInk = Color(0xFF7C2D12)            // Orange 900
  * keeping the warm-stone surface tones from the Marmalade base scheme.
  *
  * Mirrors the marmalade-android ThemePreset enum so the two apps stay in
- * lockstep visually. Chat-specific tokens are intentionally absent — this
- * is a TTS app and doesn't need user-bubble / avatar colors.
+ * lockstep visually. Chat-specific tokens are intentionally absent — the
+ * apps using this library don't need user-bubble / avatar colors.
  */
 enum class ThemePreset(
     val displayName: String,

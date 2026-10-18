@@ -2,6 +2,7 @@ package app.marmalade.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -18,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
  * orange on a dark surface is an explicit anti-pattern. Non-Marmalade
  * presets fall back to the scheme primary (same rule as
  * marmalade-android's extended-color fallback). Provided by
- * [MarmaladeTtsTheme]; the default matches the light-mode Marmalade value
+ * [MarmaladeTheme]; the default matches the light-mode Marmalade value
  * so previews outside the theme still render sanely.
  */
 val LocalWordmarkColor = staticCompositionLocalOf { Color(0xFFF97316) }
@@ -31,10 +32,10 @@ val LocalWordmarkColor = staticCompositionLocalOf { Color(0xFFF97316) }
  * - "dark"   -> true  (always dark)
  * - anything else (including "system", "", unknown) -> defer to the system
  *
- * Wired into [app.marmalade.tts.MainActivity], which reads the persisted
- * `themeMode` and the platform `isSystemInDarkTheme()` then passes the
- * resolved boolean into [MarmaladeTtsTheme]. Settings → Appearance → Mode
- * is what flips the persisted value between "system" / "light" / "dark".
+ * An app reads its persisted `themeMode` and the platform
+ * `isSystemInDarkTheme()`, then passes the resolved boolean into
+ * [MarmaladeTheme]. (In marmalade-tts-android, Settings → Appearance → Mode
+ * flips the persisted value between "system" / "light" / "dark".)
  */
 fun resolveThemeIsDark(themeMode: String, isSystemDark: Boolean): Boolean {
     return when (themeMode) {
@@ -45,7 +46,7 @@ fun resolveThemeIsDark(themeMode: String, isSystemDark: Boolean): Boolean {
 }
 
 /**
- * Marmalade TTS app theme with Material You dynamic colors and curated presets.
+ * The Marmalade app theme with Material You dynamic colors and curated presets.
  *
  * @param darkTheme Whether to use the dark color scheme.
  * @param themePreset The selected theme preset. [ThemePreset.SYSTEM] uses
@@ -56,7 +57,7 @@ fun resolveThemeIsDark(themeMode: String, isSystemDark: Boolean): Boolean {
  * @param content The composable content to render within this theme.
  */
 @Composable
-fun MarmaladeTtsTheme(
+fun MarmaladeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     themePreset: ThemePreset = ThemePreset.SYSTEM,
     content: @Composable () -> Unit,
@@ -96,17 +97,32 @@ fun MarmaladeTtsTheme(
         else -> colorScheme.primary
     }
 
-    val depth = remember(colorScheme, darkTheme) {
-        if (darkTheme) darkDepth(colorScheme) else lightDepth(colorScheme)
-    }
+    MarmaladeTheme(colorScheme = colorScheme, darkTheme = darkTheme, wordmarkColor = wordmarkColor, content = content)
+}
 
+/**
+ * The hook for an app's own presets: the Marmalade theme (depth, shapes,
+ * typography, wordmark colour) around a [colorScheme] the app built itself,
+ * e.g. a shared scheme with a few roles changed. [depth] defaults to the
+ * ramp derived from [colorScheme], as the preset theme above uses.
+ */
+@Composable
+fun MarmaladeTheme(
+    colorScheme: ColorScheme,
+    darkTheme: Boolean,
+    wordmarkColor: Color = colorScheme.primary,
+    depth: MarmaladeDepth = remember(colorScheme, darkTheme) {
+        if (darkTheme) darkDepth(colorScheme) else lightDepth(colorScheme)
+    },
+    content: @Composable () -> Unit,
+) {
     CompositionLocalProvider(
         LocalWordmarkColor provides wordmarkColor,
         LocalMarmaladeDepth provides depth,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            shapes = MarmaladeTtsShapes,
+            shapes = MarmaladeShapes,
             typography = MarmaladeTypography,
             content = content,
         )

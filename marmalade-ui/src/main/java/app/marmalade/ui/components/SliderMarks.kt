@@ -16,7 +16,7 @@ import app.marmalade.ui.theme.depth
 // -----------------------------------------------------------------------------
 
 @Composable
-internal fun SteppedSliderTrack(state: SliderState) {
+fun SteppedSliderTrack(state: SliderState) {
     SliderDefaults.Track(sliderState = state, colors = marmaladeSliderColors(), drawTick = { _, _ -> })
 }
 
@@ -29,7 +29,7 @@ internal fun SteppedSliderTrack(state: SliderState) {
  * track already is.
  */
 @Composable
-internal fun marmaladeSliderColors(): SliderColors = if (MaterialTheme.depth.isDark) {
+fun marmaladeSliderColors(): SliderColors = if (MaterialTheme.depth.isDark) {
     SliderDefaults.colors()
 } else {
     SliderDefaults.colors(inactiveTrackColor = MaterialTheme.colorScheme.primaryContainer)
