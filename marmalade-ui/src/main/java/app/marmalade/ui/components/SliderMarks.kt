@@ -5,7 +5,6 @@ import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SliderState
 import androidx.compose.runtime.Composable
-import app.marmalade.ui.theme.depth
 
 // -----------------------------------------------------------------------------
 // The track of a stepped slider (#84). Material draws a dot at every detent,
@@ -21,16 +20,14 @@ fun SteppedSliderTrack(state: SliderState) {
 }
 
 /**
- * Slider colours for every slider in the app, stepped or not. Light mode's
- * default inactive track (secondaryContainer) is all but the page colour: on
- * a stepped slider the stop dots were the only sign of where the track ran,
- * and the effect editor's smooth sliders (#88) had nothing at all. It takes
- * the toast container instead, a quiet step darker, as dark mode's rich brown
- * track already is.
+ * Slider colours for every slider in the app, stepped or not. The inactive
+ * track is the preset's container in both modes. Material's default
+ * (secondaryContainer) is all but the page colour in light mode: on a
+ * stepped slider the stop dots were the only sign of where the track ran,
+ * and the effect editor's smooth sliders (#88) had nothing at all. In a dark
+ * preset it is the pill tone, the active track's own colour; Marmalade's
+ * dark track is Orange 800 (3.2:1 under the Orange 400 fill).
  */
 @Composable
-fun marmaladeSliderColors(): SliderColors = if (MaterialTheme.depth.isDark) {
-    SliderDefaults.colors()
-} else {
+fun marmaladeSliderColors(): SliderColors =
     SliderDefaults.colors(inactiveTrackColor = MaterialTheme.colorScheme.primaryContainer)
-}

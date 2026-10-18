@@ -179,10 +179,11 @@ fun labelOn(fill: Color): Color {
 }
 
 /**
- * Build a color scheme for a curated preset by overlaying its primary family
- * onto the supplied base scheme. Surface / background tones come from the
- * base — only primary-family roles get swapped — so every preset keeps the
- * same warm-stone look.
+ * Build a color scheme for a curated preset by recolouring the base scheme's
+ * accent roles (the primary, secondary and tertiary families) in the
+ * preset's colour. Surface / background tones and text come from the base,
+ * so every preset keeps the same warm-stone look, and no orange is left in a
+ * blue, green or red theme.
  */
 fun buildPresetScheme(base: ColorScheme, preset: ThemePreset, isDark: Boolean): ColorScheme {
     val primary = if (isDark) preset.darkPrimary else preset.lightPrimary
@@ -195,11 +196,27 @@ fun buildPresetScheme(base: ColorScheme, preset: ThemePreset, isDark: Boolean): 
         primary.luminance() < 0.5f -> Color.White
         else -> Color(0xFF1C1917)
     }
+    // The pill: the selected tab's indicator, a selected chip or segment
+    // (secondaryContainer). Light: the preset's pale tone on the cream bar, as
+    // toast is Marmalade's. Dark: its light tone, 5.8-9.3:1 on the bar (its
+    // dark tones are 1.4-1.8:1 there, Marmalade's Orange 900 is 1.7).
+    val pill = if (isDark) preset.darkPrimary else preset.lightPrimaryContainer
     return base.copy(
         primary = primary,
         onPrimary = onPrimary,
         primaryContainer = primaryContainer,
         onPrimaryContainer = labelOn(primaryContainer),
+        // Left as the base's, these kept Marmalade's orange in the other
+        // presets: the pill above, WorkingDots and LiveDot (tertiary), and
+        // Material's secondary text and icons.
+        secondary = primary,
+        onSecondary = onPrimary,
+        secondaryContainer = pill,
+        onSecondaryContainer = labelOn(pill),
+        tertiary = primary,
+        onTertiary = onPrimary,
+        tertiaryContainer = primaryContainer,
+        onTertiaryContainer = labelOn(primaryContainer),
         surfaceTint = primary,
         inversePrimary = if (isDark) preset.lightPrimary else preset.darkPrimary,
     )
