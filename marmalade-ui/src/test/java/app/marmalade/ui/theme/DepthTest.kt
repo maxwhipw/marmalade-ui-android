@@ -2,9 +2,6 @@ package app.marmalade.ui.theme
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.graphics.luminance
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -35,18 +32,12 @@ class DepthTest {
         }
     }
 
-    private fun contrast(fg: Color, bg: Color): Float {
-        val a = fg.compositeOver(bg).luminance() + 0.05f
-        val b = bg.luminance() + 0.05f
-        return maxOf(a, b) / minOf(a, b)
-    }
-
     private fun checkRamp(depth: MarmaladeDepth) {
         for (bg in listOf(depth.page, depth.card, depth.raised, depth.sheet)) {
             // dim is the quietest text: WCAG AA for body text.
-            assertTrue("dim on $bg", contrast(depth.dim, bg) >= 4.5f)
+            assertTrue("dim on $bg", contrastRatio(depth.dim, bg) >= 4.5f)
             // faint is for glyphs and icons: WCAG non-text 3:1.
-            assertTrue("faint on $bg", contrast(depth.faint, bg) >= 3f)
+            assertTrue("faint on $bg", contrastRatio(depth.faint, bg) >= 3f)
         }
     }
 

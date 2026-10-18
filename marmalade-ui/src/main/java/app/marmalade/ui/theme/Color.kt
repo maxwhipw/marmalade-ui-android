@@ -4,6 +4,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.luminance
 
 // =============================================================================
@@ -60,6 +61,9 @@ val MarmaladeLightColors = lightColorScheme(
     onError = Color.White,
     errorContainer = Color(0xFFFEE2E2),
     onErrorContainer = Color(0xFF7F1D1D),
+    // Light's outline and orange are knowingly below WCAG AA (Stone 400 is
+    // 2.2-2.5:1 on cream; Orange 500 2.6:1 as text, white on it 2.8:1): Max's
+    // call, 2026-10-17 (#89). Dark is the mode that meets AA.
     outline = Color(0xFFA8A29E),             // Stone 400
     outlineVariant = Color(0x211C1917),      // Stone 900 at 13%
     inverseSurface = Color(0xFF1C1917),
@@ -104,7 +108,9 @@ val MarmaladeDarkColors = darkColorScheme(
     onError = Color(0xFF1C1917),
     errorContainer = Color(0xFF7F1D1D),
     onErrorContainer = Color(0xFFFECACA),
-    outline = Color(0xFF78716C),             // Stone 500
+    // Stone 500 nudged a hair lighter (#78716C was 2.95:1 on menus): the
+    // edge of an unticked box or a text field needs 3:1 on every surface (#89).
+    outline = Color(0xFF7C756F),
     outlineVariant = Color(0x1CFAFAF9),      // Stone 50 at 11%
     inverseSurface = Color(0xFFFAFAF9),
     inverseOnSurface = Color(0xFF1C1917),
@@ -155,6 +161,23 @@ enum class ThemePreset(
     }
 }
 
+/** WCAG 2 contrast ratio of [fg] (composited over [bg] if translucent) on [bg]. */
+fun contrastRatio(fg: Color, bg: Color): Float {
+    val a = fg.compositeOver(bg).luminance() + 0.05f
+    val b = bg.luminance() + 0.05f
+    return maxOf(a, b) / minOf(a, b)
+}
+
+/**
+ * White or Stone 900, whichever reads better on [fill]. Not a luminance
+ * 0.5 cut: the two tie near luminance 0.18, so that cut put white on
+ * Midnight's dark primary (#60A5FA) at 2.5:1 where ink gives 6.9:1 (#89).
+ */
+fun labelOn(fill: Color): Color {
+    val ink = Color(0xFF1C1917)
+    return if (contrastRatio(Color.White, fill) >= contrastRatio(ink, fill)) Color.White else ink
+}
+
 /**
  * Build a color scheme for a curated preset by overlaying its primary family
  * onto the supplied base scheme. Surface / background tones come from the
@@ -164,12 +187,19 @@ enum class ThemePreset(
 fun buildPresetScheme(base: ColorScheme, preset: ThemePreset, isDark: Boolean): ColorScheme {
     val primary = if (isDark) preset.darkPrimary else preset.lightPrimary
     val primaryContainer = if (isDark) preset.darkPrimaryContainer else preset.lightPrimaryContainer
-    val onPrimary = if (primary.luminance() < 0.5f) Color.White else Color(0xFF1C1917)
+    // Dark takes the stronger label (white on Midnight's and Berry's dark
+    // primaries was 2.5-2.8:1). Light keeps its luminance cut, which puts
+    // white on Forest at 3.3:1: below AA by Max's call (#89, 2026-10-17).
+    val onPrimary = when {
+        isDark -> labelOn(primary)
+        primary.luminance() < 0.5f -> Color.White
+        else -> Color(0xFF1C1917)
+    }
     return base.copy(
         primary = primary,
         onPrimary = onPrimary,
         primaryContainer = primaryContainer,
-        onPrimaryContainer = if (primaryContainer.luminance() < 0.5f) Color.White else Color(0xFF1C1917),
+        onPrimaryContainer = labelOn(primaryContainer),
         surfaceTint = primary,
         inversePrimary = if (isDark) preset.lightPrimary else preset.darkPrimary,
     )

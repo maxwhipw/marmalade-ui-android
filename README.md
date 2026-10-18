@@ -3,8 +3,9 @@
 The shared design layer of the Marmalade Android apps: colours, the
 surface and ink ramp ("depth"), soft shadows, shapes, typography with its
 bundled fonts, motion, and a few generic components. It is
-marmalade-tts-android 1.3.0's theme, lifted as it was. Marmalade STT uses
-it too, so both apps look and read the same.
+marmalade-tts-android's theme as of 1.3.0 plus its #89 contrast fixes
+(dark mode meets WCAG AA), lifted as it was. Marmalade STT uses it too,
+so both apps look and read the same.
 
 ## What is in it
 
@@ -19,7 +20,7 @@ it too, so both apps look and read the same.
   colour come along.
 - `MarmaladeLightColors`, `MarmaladeDarkColors`, `buildPresetScheme`,
   `ThemePreset`, `MarmaladeToast` / `MarmaladeToastInk`, `LocalWordmarkColor`,
-  `resolveThemeIsDark`.
+  `resolveThemeIsDark`, `contrastRatio`, `labelOn`.
 - `MaterialTheme.depth`: the layer ramp (page, card, raised, sheet, scrim),
   the ink ramp (`dim` for the quietest text, `faint` for icons, `ghost`,
   `line`, `line2`) and the soft shadows; `Modifier.softShadow`,
@@ -74,6 +75,15 @@ no network access, which keeps F-Droid builds reproducible.
   it in the app, or proposes it here when the other app could use it too.
 - A change here changes every app that moves its pin. Check both apps'
   contrast tests after moving.
+
+## Contrast
+
+`ThemeContrastTest` holds what the theme promises (WCAG 2.2 AA): dark mode
+meets AA for every curated preset (text 4.5:1, icons and control edges
+3:1); light mode's quiet text and icons do too, but its orange and its
+Stone 400 outline are knowingly below AA (Max's call, 2026-10-17). An app
+that promises more (a high-contrast preset) builds its own scheme through
+the `MarmaladeTheme(colorScheme, …)` hook and tests it itself.
 
 ## Versions
 
