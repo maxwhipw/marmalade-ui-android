@@ -15,3 +15,6 @@ Marmalade TTS's own theme is at 260fc1d (1.3.0 plus TTS #89).
   for the unfilled track in dark mode too (a dark preset's
   `secondaryContainer` is now the fill's own colour). Marmalade's dark
   track goes from Orange 900 to Orange 800.
+- **Error red meets AA in both modes.** Light `error` is Red 700 #B91C1C
+  (Red 600 was 4.2:1 on dialogs), dark is Red 400 #F87171 (#EF4444 was
+  3.8-4.0:1 on cards and menus). `ThemeContrastTest` now checks error text.

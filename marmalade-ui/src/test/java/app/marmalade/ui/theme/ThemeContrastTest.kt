@@ -11,7 +11,8 @@ import org.junit.Test
  * the edges of controls.
  *
  * Dark mode meets AA for MARMALADE and every curated preset. Light mode's
- * quiet text and icons do too ([DepthTest]), but its orange (Orange 500 is
+ * quiet text and icons do too ([DepthTest]), and error text does in both
+ * modes on every surface, dialogs included; but light mode's orange (Orange 500 is
  * 2.6:1 as text on cream, white on it 2.8:1) and its Stone 400 outline
  * (2.2-2.5:1) are knowingly below AA: Max's call, 2026-10-17. SYSTEM is
  * Material You, tone-based and device-specific, so it is not checked here.
@@ -78,6 +79,24 @@ class ThemeContrastTest {
         val scheme = darkScheme(preset)
         for ((surface, bg) in surfaces(darkDepth(scheme))) {
             assertAtLeast(4.5f, scheme.primary, bg, "$preset dark primary text on $surface")
+        }
+    }
+
+    @Test
+    fun errorTextReadsOnEverySurfaceInBothModes() = curated.forEach { preset ->
+        val light = if (preset == ThemePreset.MARMALADE) {
+            MarmaladeLightColors
+        } else {
+            buildPresetScheme(MarmaladeLightColors, preset, isDark = false)
+        }
+        val modes = LightDepth.entries.map { "light $it" to (light to lightDepth(light, it)) } +
+            ("dark" to (darkScheme(preset) to darkDepth(darkScheme(preset))))
+        for ((mode, pair) in modes) {
+            val (scheme, depth) = pair
+            // AlertDialog's container is surfaceContainerHigh.
+            for ((surface, bg) in surfaces(depth) + ("dialog" to scheme.surfaceContainerHigh)) {
+                assertAtLeast(4.5f, scheme.error, bg, "$preset $mode error on $surface")
+            }
         }
     }
 

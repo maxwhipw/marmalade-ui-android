@@ -57,7 +57,8 @@ val MarmaladeLightColors = lightColorScheme(
     surfaceDim = Color(0xFFEFE4D6),
     background = Color(0xFFFFF7ED),          // Orange 50
     onBackground = Color(0xFF1C1917),        // Stone 900
-    error = Color(0xFFDC2626),               // Red 600
+    // Red 700, not 600: error text needs 4.5:1 on dialogs too (600 was 4.2).
+    error = Color(0xFFB91C1C),               // Red 700
     onError = Color.White,
     errorContainer = Color(0xFFFEE2E2),
     onErrorContainer = Color(0xFF7F1D1D),
@@ -104,7 +105,9 @@ val MarmaladeDarkColors = darkColorScheme(
     surfaceDim = Color(0xFF1C1917),
     background = Color(0xFF1C1917),          // Stone deep
     onBackground = Color(0xFFFAFAF9),        // Stone 50
-    error = Color(0xFFEF4444),
+    // Red 400, not 500: error text needs 4.5:1 on cards and menus too (500
+    // was 3.8-4.0); 5.1:1 or more on every dark surface.
+    error = Color(0xFFF87171),               // Red 400
     onError = Color(0xFF1C1917),
     errorContainer = Color(0xFF7F1D1D),
     onErrorContainer = Color(0xFFFECACA),

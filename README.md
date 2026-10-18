@@ -80,7 +80,9 @@ no network access, which keeps F-Droid builds reproducible.
 
 `ThemeContrastTest` holds what the theme promises (WCAG 2.2 AA): dark mode
 meets AA for every curated preset (text 4.5:1, icons and control edges
-3:1); light mode's quiet text and icons do too, but its orange and its
+3:1); light mode's quiet text and icons do too, and so does error text in
+both modes (Red 700 light, Red 400 dark, on every surface and dialogs);
+but light mode's orange and its
 Stone 400 outline are knowingly below AA (Max's call, 2026-10-17). An app
 that promises more (a high-contrast preset) builds its own scheme through
 the `MarmaladeTheme(colorScheme, …)` hook and tests it itself.
