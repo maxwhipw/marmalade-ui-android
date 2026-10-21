@@ -34,6 +34,8 @@ so both apps look and read the same.
 - `MarmaladeCard`, `MarmaladeSheet`, `MarmaladeMenu`, `chevronAngle`,
   `WorkingDots`, `LiveDot`.
 - `SteppedSliderTrack` and `marmaladeSliderColors()` for sliders.
+- `marmaladeNavigationBarItemColors(marmaladePalette)` for a bottom bar's
+  tabs: a selected pill that stands off the bar in every preset.
 
 App-specific parts (screens, an app's extra presets, its own components)
 stay in the app.

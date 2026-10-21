@@ -17,7 +17,7 @@ class PresetTest {
             assertEquals(scheme.primary, scheme.surfaceTint)
             assertEquals(scheme.primary, scheme.secondary)
             assertEquals(scheme.primary, scheme.tertiary)
-            assertEquals(if (dark) Color(0xFF60A5FA) else Color(0xFFDBEAFE), scheme.secondaryContainer)
+            assertEquals(if (dark) Color(0xFF1E3A5F) else Color(0xFFDBEAFE), scheme.secondaryContainer)
             assertEquals(scheme.primaryContainer, scheme.tertiaryContainer)
             // Surfaces and text stay the base's.
             assertEquals(base.surface, scheme.surface)
@@ -52,10 +52,11 @@ class PresetTest {
     }
 
     /**
-     * The selected tab's pill stands off the nav bar. Dark: 3:1 for every
-     * preset (Marmalade's pill is toast, the apps' choice for its palette).
-     * Light: no pale pill reaches 3:1 on the cream bar (toast is 1.2:1), so
-     * a preset's pill is its own pale tone, never the bar's cream.
+     * The selected tab's pill, as marmaladeNavigationBarItemColors picks it,
+     * stands off the nav bar. Dark: 3:1 for every preset (toast on the
+     * Marmalade palette, primary elsewhere). Light: no pale pill reaches 3:1
+     * on the cream bar (toast is 1.2:1), so a preset's pill is its own pale
+     * tone, never the bar's cream.
      */
     @Test
     fun theSelectedTabPillStandsOffTheBar() {
@@ -63,12 +64,33 @@ class PresetTest {
         assertTrue(contrastRatio(MarmaladeToast, bar) >= 3f)
         for (preset in listOf(ThemePreset.MIDNIGHT, ThemePreset.FOREST, ThemePreset.BERRY)) {
             val dark = buildPresetScheme(MarmaladeDarkColors, preset, isDark = true)
-            val ratio = contrastRatio(dark.secondaryContainer, dark.surfaceContainer)
+            val ratio = contrastRatio(dark.primary, dark.surfaceContainer)
             assertTrue("$preset dark pill on the bar: $ratio", ratio >= 3f)
-            assertTrue("$preset dark pill icon", contrastRatio(dark.onSecondaryContainer, dark.secondaryContainer) >= 3f)
+            assertTrue("$preset dark pill icon", contrastRatio(dark.onPrimary, dark.primary) >= 3f)
             val light = buildPresetScheme(MarmaladeLightColors, preset, isDark = false)
             assertEquals(preset.lightPrimaryContainer, light.secondaryContainer)
             assertTrue("$preset light pill icon", contrastRatio(light.onSecondaryContainer, light.secondaryContainer) >= 3f)
+        }
+    }
+
+    /**
+     * A progress bar left on Material's default track (secondaryContainer,
+     * under a primary bar) shows how far it has got: 3:1 between the two in
+     * every preset and both modes (#11: a dark track the bar's own colour
+     * looked full). Marmalade's light mode is its base scheme's, orange 500
+     * on Orange 50 at 2.6:1, with light orange's other knowing shortfalls
+     * (Max's call, #89).
+     */
+    @Test
+    fun aDefaultTrackProgressBarStaysVisible() {
+        for (preset in ThemePreset.entries - ThemePreset.SYSTEM) {
+            for (dark in listOf(false, true)) {
+                val base = if (dark) MarmaladeDarkColors else MarmaladeLightColors
+                val s = if (preset == ThemePreset.MARMALADE) base else buildPresetScheme(base, preset, dark)
+                val ratio = contrastRatio(s.primary, s.secondaryContainer)
+                val min = if (preset == ThemePreset.MARMALADE && !dark) 2.6f else 3f
+                assertTrue("$preset dark=$dark bar on its track: $ratio", ratio >= min)
+            }
         }
     }
 

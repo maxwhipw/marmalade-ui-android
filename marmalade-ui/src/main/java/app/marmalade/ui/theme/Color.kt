@@ -136,8 +136,9 @@ val MarmaladeToastInk = Color(0xFF7C2D12)            // Orange 900
 /**
  * Curated theme presets. [SYSTEM] uses Material You dynamic colors from the
  * device wallpaper on Android 12+. [MARMALADE] uses the hand-tuned orange
- * palette above. Other presets override the primary color family while
- * keeping the warm-stone surface tones from the Marmalade base scheme.
+ * palette above. Other presets recolour the accent roles (the primary,
+ * secondary and tertiary families, [buildPresetScheme]) while keeping the
+ * warm-stone surface tones from the Marmalade base scheme.
  *
  * Mirrors the marmalade-android ThemePreset enum so the two apps stay in
  * lockstep visually. Chat-specific tokens are intentionally absent — the
@@ -199,23 +200,24 @@ fun buildPresetScheme(base: ColorScheme, preset: ThemePreset, isDark: Boolean): 
         primary.luminance() < 0.5f -> Color.White
         else -> Color(0xFF1C1917)
     }
-    // The pill: the selected tab's indicator, a selected chip or segment
-    // (secondaryContainer). Light: the preset's pale tone on the cream bar, as
-    // toast is Marmalade's. Dark: its light tone, 5.8-9.3:1 on the bar (its
-    // dark tones are 1.4-1.8:1 there, Marmalade's Orange 900 is 1.7).
-    val pill = if (isDark) preset.darkPrimary else preset.lightPrimaryContainer
     return base.copy(
         primary = primary,
         onPrimary = onPrimary,
         primaryContainer = primaryContainer,
         onPrimaryContainer = labelOn(primaryContainer),
         // Left as the base's, these kept Marmalade's orange in the other
-        // presets: the pill above, WorkingDots and LiveDot (tertiary), and
-        // Material's secondary text and icons.
+        // presets: the tab pill, WorkingDots and LiveDot (tertiary), and
+        // Material's secondary text and icons. secondaryContainer is the
+        // preset's container, pale in light mode and dark in dark mode (as
+        // Marmalade's Orange 50 / Orange 900): Material draws a default
+        // progress track in it under a primary bar, so it must stay apart
+        // from primary (3.6-5.2:1 in dark), or a bar looks full (#11). Being
+        // dark, it is faint on the dark bar (1.4-1.8:1), so the nav bar's
+        // pill takes primary there: marmaladeNavigationBarItemColors.
         secondary = primary,
         onSecondary = onPrimary,
-        secondaryContainer = pill,
-        onSecondaryContainer = labelOn(pill),
+        secondaryContainer = primaryContainer,
+        onSecondaryContainer = labelOn(primaryContainer),
         tertiary = primary,
         onTertiary = onPrimary,
         tertiaryContainer = primaryContainer,
