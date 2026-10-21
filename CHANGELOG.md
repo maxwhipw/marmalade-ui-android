@@ -24,3 +24,5 @@ Marmalade TTS's own theme is at 260fc1d (1.3.0 plus TTS #89).
 - **Error red meets AA in both modes.** Light `error` is Red 700 #B91C1C
   (Red 600 was 4.2:1 on dialogs), dark is Red 400 #F87171 (#EF4444 was
   3.8-4.0:1 on cards and menus). `ThemeContrastTest` now checks error text.
+- **Wordmark docs:** a call site may set a heavier weight, which Compose
+  synthesises (TTS's Speak screen draws it at 600). The font is unchanged.
