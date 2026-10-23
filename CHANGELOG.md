@@ -5,6 +5,14 @@ Marmalade TTS's own theme is at 260fc1d (1.3.0 plus TTS #89).
 
 ## Unreleased
 
+- **The selected tab's label is bold.** `MarmaladeNavigationBarLabel(text,
+  selected)` is a bottom bar tab's label: labelMedium (Manrope 500) on one
+  line, ellipsized, and Bold (700) on the selected tab. Only the weight
+  changes: the pill, colours and sizes stay. An app moving its pin should
+  use it as each `NavigationBarItem`'s `label` (TTS: in place of
+  `Text(label)`); one that scales the label passes its own `style` and
+  keeps the bold. `marmaladeNavigationBarLabelStyle` is the same rule for
+  a hand-made label. Marmalade STT adopts it in its #89.
 - **The blue, green and red presets carry no orange.** `buildPresetScheme`
   now recolours the secondary and tertiary roles too, not only primary.
   `secondaryContainer` is the preset's container (its pale tone in light
